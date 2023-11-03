@@ -32,7 +32,7 @@ export default function Hero({ landing = false }) {
   }, []);
   function signOutHandler() {
     localStorage.removeItem("token");
-    router.push("/login");
+    router.push("/");
     setSignedIn(false);
   }
 
