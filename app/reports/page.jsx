@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import {
   BarChart,
   CartesianGrid,
-  ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
@@ -15,6 +14,12 @@ import LoaderEffect from "@/components/LoaderEffect";
 import { Table } from "antd";
 
 const page = () => {
+  const [token, setToken] = useState(null);
+  useEffect(() => {
+    let token = localStorage.getItem("token");
+    token = JSON.parse(token);
+    setToken(token);
+  }, []);
   const [chartData, setChartData] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -54,34 +59,49 @@ const page = () => {
       key: "city",
       render: (text) => <p>{text?.charAt(0).toUpperCase() + text?.slice(1)}</p>,
     },
+    {
+      title: "Download",
+      dataIndex: "download",
+      key: "download",
+      render: (download, record) => (
+        <button
+          type="button"
+          onClick={() => {
+            console.log(record);
+          }}
+          className="text-blue-500 hover:underline"
+        >
+          Download PDF
+        </button>
+      ),
+    },
   ];
 
   useEffect(() => {
     setLoading(true);
-    let token = localStorage.getItem("token");
-    token = JSON.parse(token);
     const endpoint = process.env.NEXT_PUBLIC_ENDPOINT;
-    fetch(`${endpoint}/reports`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token?.access_token,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        const chartData = data.map((item) => ({
-          name: item.year,
-          income: item.income,
-          tax: item.tax,
-        }));
-        console.log(chartData);
-        setChartData(chartData);
-        setReports(data);
-        setLoading(false);
-      });
-  }, []);
+    if (token != null) {
+      fetch(`${endpoint}/reports`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token?.access_token,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          const chartData = data.map((item) => ({
+            name: item.year,
+            income: item.income,
+            tax: item.tax,
+          }));
+          setChartData(chartData);
+          setReports(data);
+          setLoading(false);
+        });
+    }
+  }, [token]);
 
   return (
     <main className="min-h-screen">
@@ -123,7 +143,7 @@ const page = () => {
             </BarChart>
           </div>
         )}
-        <div className="px-4 lg:px-12 mt-4 lg:mt-12">
+        <div className="px-4 lg:px-12 mt-4 lg:mt-12 overflow-x-auto">
           <Table loading={loading} dataSource={reports} columns={columns} />
         </div>
       </section>

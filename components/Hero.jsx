@@ -57,9 +57,18 @@ export default function Hero({ landing = false }) {
         {signedIn && (
           <div className="space-x-4 lg:flex hidden">
             <p
+              onClick={() => router.push("/")}
+              className={`${
+                pathname == "/" && "outline text-white outline-1 outline-white"
+              } hover:outline text-white cursor-pointer outline-1 outline-gray-700 py-2 px-4 rounded-lg transition-all .5s`}
+            >
+              Home
+            </p>
+            <p
               onClick={() => router.push("/dashboard")}
               className={`${
-                pathname == "/dashboard" && "outline text-white outline-1 outline-white"
+                pathname == "/dashboard" &&
+                "outline text-white outline-1 outline-white"
               } hover:outline text-white cursor-pointer outline-1 outline-gray-700 py-2 px-4 rounded-lg transition-all .5s`}
             >
               Dashboard
@@ -108,6 +117,11 @@ export default function Hero({ landing = false }) {
                     <DropdownMenuContent className="bg-white border-2 border-black rounded-md mt-4 mr-8 z-50">
                       <DropdownMenuItem className="px-2 py-4 my-4 text-white cursor-pointer hover:outline-none hover:bg-gray-100">
                         <Link className="text-black p-2" href={`/`}>
+                          Home
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="px-2 py-4 my-4 text-white cursor-pointer hover:outline-none hover:bg-gray-100">
+                        <Link className="text-black p-2" href={`/dashboard`}>
                           DashBoard
                         </Link>
                       </DropdownMenuItem>
