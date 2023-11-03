@@ -1,5 +1,4 @@
 "use client";
-
 import Hero from "../components/Hero";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -12,7 +11,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-export default function Home() {
+const HomeComponent = () => {
   const currentYear = new Date().getFullYear();
   const router = useRouter();
   const [profile, setProfile] = useState(null);
@@ -36,14 +35,8 @@ export default function Home() {
     2011, 2010, 2009, 2008, 2007, 2006, 2005, 2004, 2003, 2002, 2001, 2000,
   ];
 
-  const [token, setToken] = useState(null);
-  useEffect(() => {
-    let token = localStorage.getItem("token");
-    token = JSON.parse(token);
-    if (token) {
-      setToken(token);
-    }
-  }, []);
+  let token = localStorage.getItem("token");
+  token = JSON.parse(token);
 
   async function handleCalculate(e) {
     setCalculateLoading(true);
@@ -304,14 +297,19 @@ export default function Home() {
                           View Net Payable Tax Breakdown
                         </AccordionTrigger>
                         <AccordionContent>
-                          {JSON.parse(currentReport.breakdown).map((value) => {
-                            return (
-                              <div className="flex justify-between items-center text-lg lg:text-2xl px-4 lg:px-16 border-b">
-                                <div>{value.message}</div>
-                                <div>{value.amount + " BDT"}</div>
-                              </div>
-                            );
-                          })}
+                          {JSON.parse(currentReport.breakdown).map(
+                            (value, index) => {
+                              return (
+                                <div
+                                  key={index}
+                                  className="flex justify-between items-center text-lg lg:text-2xl px-4 lg:px-16 border-b"
+                                >
+                                  <div>{value.message}</div>
+                                  <div>{value.amount + " BDT"}</div>
+                                </div>
+                              );
+                            }
+                          )}
                         </AccordionContent>
                       </AccordionItem>
                     </Accordion>
@@ -337,7 +335,7 @@ export default function Home() {
             <div className="flex items-center justify-between">
               <hr className="w-1/6 border-black" />
               <div className="text-black text-md lg:text-2xl font-medium">
-                Save Previous Years' Tax
+                Save Previous Years Tax
               </div>
               <hr className="w-1/6 lg:w-2/3 border-black" />
             </div>
@@ -447,4 +445,5 @@ export default function Home() {
       </section>
     </main>
   );
-}
+};
+export default HomeComponent;

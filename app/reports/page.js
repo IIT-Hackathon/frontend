@@ -14,13 +14,6 @@ import {
 import LoaderEffect from "@/components/LoaderEffect";
 
 const page = () => {
-  useEffect(() => {
-    if (window) {
-      let token = localStorage.getItem("token");
-      token = JSON.parse(token);
-    }
-  }, [window]);
-
   const [chartData, setChartData] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -28,6 +21,8 @@ const page = () => {
 
   useEffect(() => {
     setLoading(true);
+    let token = localStorage.getItem("token");
+    token = JSON.parse(token);
     const endpoint = process.env.NEXT_PUBLIC_ENDPOINT;
     fetch(`${endpoint}/reports`, {
       method: "GET",
@@ -44,6 +39,7 @@ const page = () => {
           income: item.income,
           tax: item.tax,
         }));
+        console.log(chartData);
         setChartData(chartData);
         setReports(data);
         setLoading(false);
@@ -62,27 +58,25 @@ const page = () => {
           </div>
         ) : (
           <div className="min-w-full mt-5 overflow-x-auto flex justify-center">
-            <ResponsiveContainer width={1000} maxHeight={300} height="80%">
-              <BarChart
-                width={500}
-                height={300}
-                data={chartData}
-                margin={{
-                  top: 20,
-                  right: 30,
-                  left: 20,
-                  bottom: 5,
-                }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="income" stackId="a" fill="#8884d8" />
-                <Bar dataKey="tax" stackId="a" fill="#82ca9d" />
-              </BarChart>
-            </ResponsiveContainer>
+            <BarChart
+              width={500}
+              height={300}
+              data={chartData}
+              margin={{
+                top: 20,
+                right: 30,
+                left: 20,
+                bottom: 5,
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="income" stackId="a" fill="#8884d8" />
+              <Bar dataKey="tax" stackId="a" fill="#82ca9d" />
+            </BarChart>
           </div>
         )}
       </section>

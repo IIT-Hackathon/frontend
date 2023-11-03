@@ -19,10 +19,13 @@ const caveat = Oswald({ subsets: ["latin"] });
 export default function Hero({ landing = false }) {
   const pathname = usePathname();
   const [signedIn, setSignedIn] = useState(false);
+  const [token, setToken] = useState(null);
+
   const router = useRouter();
-  let token = localStorage.getItem("token");
-  token = JSON.parse(token);
+
   useEffect(() => {
+    let token = localStorage.getItem("token");
+    token = JSON.parse(token);
     if (token) {
       setSignedIn(true);
     }
@@ -54,7 +57,7 @@ export default function Hero({ landing = false }) {
         {signedIn && (
           <div className="space-x-4 lg:flex hidden">
             <p
-              onClick={() => TokenCheckHandler("/")}
+              onClick={() => router.push("/")}
               className={`${
                 pathname == "/" && "outline text-white outline-1 outline-white"
               } hover:outline text-white cursor-pointer outline-1 outline-gray-700 py-2 px-4 rounded-lg transition-all .5s`}
@@ -62,7 +65,7 @@ export default function Hero({ landing = false }) {
               Dashboard
             </p>
             <p
-              onClick={() => TokenCheckHandler("/reports")}
+              onClick={() => router.push("/reports")}
               className={`${
                 pathname == "/reports" &&
                 "outline text-white outline-1 outline-white"
