@@ -207,8 +207,14 @@ export default function Home() {
                       paddingRight: "2rem",
                     }}
                   >
-                    <option defaultValue value="">
-                      City
+                    <option
+                      defaultValue
+                      value={profile?.city ? profile.city : ""}
+                    >
+                      {profile?.city
+                        ? profile.city.charAt(0).toUpperCase() +
+                          profile.city.slice(1)
+                        : "City"}
                     </option>
                     {cities.map((city, index) => {
                       return (
@@ -228,15 +234,12 @@ export default function Home() {
                     onChange={(e) => setYear(e.target.value)}
                     style={{
                       background: "white",
-                      color: year === "" ? "gray" : "black",
+                      color: "black",
                       outline: "none",
                       border: "none",
                       paddingRight: "2rem",
                     }}
                   >
-                    <option defaultValue value="">
-                      Year
-                    </option>
                     {years.map((year, index) => {
                       return (
                         <option key={index} value={year}>
@@ -250,7 +253,8 @@ export default function Home() {
               <div className="flex justify-center items-center">
                 {totalTax ? (
                   <div className="text-center text-2xl lg:text-4xl">
-                    Your Net Payable Tax is <br/> {totalTax.tax?.toLocaleString()} TK
+                    Your Net Payable Tax is <br />{" "}
+                    {totalTax.tax?.toLocaleString()} TK
                   </div>
                 ) : (
                   <button
