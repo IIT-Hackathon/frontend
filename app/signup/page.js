@@ -6,15 +6,7 @@ import robotLoader from "@/components/LottieFiles/signup.json";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { format, parse } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { ImSpinner5 } from "react-icons/im";
 
 export default function page() {
   const [name, setName] = useState("");
@@ -29,6 +21,7 @@ export default function page() {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [viewPassword, setViewPassword] = useState(false);
   const [viewCPassword, setViewCPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
   const handleDateSelect = (selectedDate) => {
@@ -49,7 +42,8 @@ export default function page() {
     }).then((res) => res.json().then((data) => setCities(data.cities)));
   }, []);
 
-  async function handleSubmit(e) {
+  function handleSubmit(e) {
+    setLoading(true);
     e.preventDefault();
     const data = {
       name: name,
@@ -59,12 +53,16 @@ export default function page() {
       city: city,
       password: password,
     };
-    const response = await fetch(`${endpoint}/users`, {
+    fetch(`${endpoint}/users`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
+    }).then((res) => {
+      if (!res.detail === "error") {
+        setLoading(false);
+        router.push("/");
+      }
     });
-    router.push("/");
   }
   return (
     <main className="min-h-screen w-full flex justify-center items-center">
@@ -85,6 +83,7 @@ export default function page() {
                       className="w-full rounded-md py-3 px-6"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
+                      required
                     />
                   </div>
                   <div className="mb-8">
@@ -95,6 +94,7 @@ export default function page() {
                       className="w-full rounded-md py-3 px-6"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
+                      required
                     />
                   </div>
                   <div className="mb-8 pr-4 bg-white rounded-md">
@@ -110,6 +110,7 @@ export default function page() {
                         border: "none",
                         paddingRight: "2rem",
                       }}
+                      required
                     >
                       <option defaultValue value="">
                         Gender
@@ -134,6 +135,7 @@ export default function page() {
                         const inputValue = e.target.value;
                         setDob(inputValue);
                       }}
+                      required
                     />
                   </div>
                   <div className="mb-8 pr-4 bg-white rounded-md">
@@ -149,6 +151,7 @@ export default function page() {
                         border: "none",
                         paddingRight: "2rem",
                       }}
+                      required
                     >
                       <option defaultValue value="">
                         City
@@ -173,19 +176,27 @@ export default function page() {
                         } py-3 px-6 text-base text-body-color placeholder-body-color shadow-one outline-none focus-visible:shadow-none dark-bg-[#242B51] dark-shadow-signUp`}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        required
                       />
                       {password && (
                         <button
+                          tabindex="-1"
                           type="button"
                           onClick={() => {
                             setViewPassword((prev) => !prev);
                           }}
-                          className="rounded-md rounded-l-none bg-white"
+                          className="rounded-md rounded-l-none bg-white focus:outline-none"
                         >
                           {viewPassword ? (
-                            <AiOutlineEyeInvisible className="mr-3 w-5 h-5 text-gray-600" />
+                            <AiOutlineEyeInvisible
+                              tabindex="-1"
+                              className="mr-3 w-5 h-5 text-gray-600"
+                            />
                           ) : (
-                            <AiOutlineEye className="mr-3 w-5 h-5 text-gray-600" />
+                            <AiOutlineEye
+                              tabindex="-1"
+                              className="mr-3 w-5 h-5 text-gray-600"
+                            />
                           )}
                         </button>
                       )}
@@ -202,19 +213,27 @@ export default function page() {
                         } py-3 px-6 text-base text-body-color placeholder-body-color shadow-one outline-none focus-visible:shadow-none dark-bg-[#242B51] dark-shadow-signUp`}
                         value={cPassword}
                         onChange={(e) => setCPassword(e.target.value)}
+                        required
                       />
                       {cPassword && (
                         <button
+                          tabindex="-1"
                           type="button"
                           onClick={() => {
                             setViewCPassword((prev) => !prev);
                           }}
-                          className="rounded-md rounded-l-none bg-white"
+                          className="rounded-md rounded-l-none bg-white focus:outline-none"
                         >
                           {viewCPassword ? (
-                            <AiOutlineEyeInvisible className="mr-3 w-5 h-5 text-gray-600" />
+                            <AiOutlineEyeInvisible
+                              tabindex="-1"
+                              className="mr-3 w-5 h-5 text-gray-600"
+                            />
                           ) : (
-                            <AiOutlineEye className="mr-3 w-5 h-5 text-gray-600" />
+                            <AiOutlineEye
+                              tabindex="-1"
+                              className="mr-3 w-5 h-5 text-gray-600"
+                            />
                           )}
                         </button>
                       )}
@@ -222,10 +241,16 @@ export default function page() {
                   </div>
                   <div className="mb-6">
                     <Button
+                      type="submit"
                       onClick={handleSubmit}
+                      disabled={loading ? true : false}
                       className="flex w-full items-center justify-center rounded-md bg-primary py-7 px-9 text-base font-medium text-white transition duration-300 ease-in-out hover:bg-opacity-80 hover:shadow-signUp"
                     >
-                      Sign up
+                      {loading ? (
+                        <ImSpinner5 className="text-white h-5 w-5 animate-spin" />
+                      ) : (
+                        "Sign up"
+                      )}
                     </Button>
                   </div>
                   <div className="flex justify-between items-center">

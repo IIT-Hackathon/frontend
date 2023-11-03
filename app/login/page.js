@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useToast } from "@/components/ui/use-toast";
+import { ImSpinner5 } from "react-icons/im";
 
 export default function page() {
   const { toast } = useToast();
@@ -12,22 +13,28 @@ export default function page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [viewPassword, setViewPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
-  async function handleSubmit(e) {
+  function handleSubmit(e) {
+    setLoading(true);
     e.preventDefault();
     const data = {
       username: email,
       password: password,
     };
     const endpoint = process.env.NEXT_PUBLIC_ENDPOINT;
-    const response = await fetch(`${endpoint}/login`, {
+    fetch(`${endpoint}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
+    }).then((res) => {
+      if (!res.detail === "error") {
+        const ans = res.json();
+        localStorage.setItem("token", JSON.stringify(ans));
+        router.push("/");
+        setLoading(false);
+      }
     });
-    const ans = await response.json();
-    localStorage.setItem("token", JSON.stringify(ans));
-    router.push("/")
   }
   return (
     <main className="min-h-screen w-full flex justify-center items-center bg-white">
@@ -46,6 +53,7 @@ export default function page() {
                   className="w-full rounded-md border border-transparent py-3 px-6 text-base text-body-color placeholder-body-color shadow-one outline-none focus-visible:shadow-none dark-bg-[#242B51] dark-shadow-signUp"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  required
                 />
               </div>
               <div className="mb-8">
@@ -59,6 +67,7 @@ export default function page() {
                     } border border-transparent py-3 px-6 text-base text-body-color placeholder-body-color shadow-one outline-none focus-visible:shadow-none dark-bg-[#242B51] dark-shadow-signUp`}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    required
                   />
                   {password && (
                     <button
@@ -80,9 +89,14 @@ export default function page() {
               <div className="mb-6">
                 <Button
                   onClick={handleSubmit}
+                  disabled={loading ? true : false}
                   className="flex w-full items-center justify-center rounded-md bg-primary py-7 px-9 text-base font-medium text-white transition duration-300 ease-in-out hover:bg-opacity-80 hover:shadow-signUp"
                 >
-                  Login
+                  {loading ? (
+                    <ImSpinner5 className="text-white h-5 w-5 animate-spin" />
+                  ) : (
+                    "Login"
+                  )}
                 </Button>
               </div>
               <div className="flex justify-between items-center">
