@@ -15,7 +15,7 @@ export default function page() {
   const [viewPassword, setViewPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     setLoading(true);
     e.preventDefault();
     const data = {
@@ -23,18 +23,17 @@ export default function page() {
       password: password,
     };
     const endpoint = process.env.NEXT_PUBLIC_ENDPOINT;
-    fetch(`${endpoint}/login`, {
+    const res = await fetch(`${endpoint}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
-    }).then((res) => {
-      if (!res.detail === "error") {
-        const ans = res.json();
-        localStorage.setItem("token", JSON.stringify(ans));
-        router.push("/");
-        setLoading(false);
-      }
     });
+    const response = await res.json();
+    if (response.detail != "error") {
+      localStorage.setItem("token", JSON.stringify(response));
+      router.push("/");
+      setLoading(false);
+    }
   }
   return (
     <main className="min-h-screen w-full flex justify-center items-center bg-white">

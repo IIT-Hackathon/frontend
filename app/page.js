@@ -7,84 +7,81 @@ import LoaderEffect from "@/components/LoaderEffect";
 import { ImSpinner5 } from "react-icons/im";
 
 export default function Home() {
+  const currentYear = new Date().getFullYear();
   const router = useRouter();
   const [profile, setProfile] = useState(null);
   const [currentReport, setCurrentReport] = useState(null);
   const [edit, setEdit] = useState(false);
-  const [city, setCity] = useState("");
+  const [income, setIncome] = useState(undefined);
+  const [city, setCity] = useState(profile?.city);
+  const [year, setYear] = useState(currentYear);
+  const [newIncome, setNewIncome] = useState(undefined);
+  const [newCity, setNewCity] = useState(profile?.city);
+  const [newYear, setNewYear] = useState(currentYear);
   const [loading, setLoading] = useState(true);
   const [calculateLoading, setCalculateLoading] = useState(false);
   const [newTaxLoading, setNewTaxLoading] = useState(false);
-  const [income, setIncome] = useState(undefined);
-  const [year, setYear] = useState(undefined);
   const [cities, setCities] = useState([]);
   const [totalTax, setTotalTax] = useState(null);
   const [newTax, setNewTax] = useState(null);
-
-  const currentYear = new Date().getFullYear();
 
   const years = [
     2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012,
     2011, 2010, 2009, 2008, 2007, 2006, 2005, 2004, 2003, 2002, 2001, 2000,
   ];
 
-  function handleCalculate(e) {
+  let token = localStorage.getItem("token");
+  token = JSON.parse(token);
+
+  async function handleCalculate(e) {
     setCalculateLoading(true);
     e.preventDefault();
     const data = {
       income: parseInt(income),
-      city: city,
+      city: city || profile?.city,
       year: parseInt(year),
     };
-    let token = localStorage.getItem("token");
-    token = JSON.parse(token);
     const endpoint = process.env.NEXT_PUBLIC_ENDPOINT;
-    fetch(`${endpoint}/calculate_tax`, {
+    const res = await fetch(`${endpoint}/calculate_tax`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + token?.access_token,
       },
       body: JSON.stringify(data),
-    }).then((res) => {
-      const response = res.json();
-      if (!response.detail === "error") {
-        setTotalTax(response);
-        setCalculateLoading(false);
-      }
     });
+    const response = await res.json();
+    if (response.detail != "error") {
+      setTotalTax(response);
+      setCalculateLoading(false);
+    }
   }
 
-  function handleNewTax(e) {
+  async function handleNewTax(e) {
     setNewTaxLoading(true);
     e.preventDefault();
     const data = {
-      income: parseInt(income),
-      city: city,
-      year: parseInt(year),
+      income: parseInt(newIncome),
+      city: newCity || profile?.city,
+      year: parseInt(newYear),
     };
-    let token = localStorage.getItem("token");
-    token = JSON.parse(token);
     const endpoint = process.env.NEXT_PUBLIC_ENDPOINT;
-    fetch(`${endpoint}/new_tax`, {
+    const res = await fetch(`${endpoint}/new_tax`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + token?.access_token,
       },
       body: JSON.stringify(data),
-    }).then((res) => {
-      const response = res.json();
-      if (!response.detail === "error") {
-        setNewTax(response);
-        setNewTaxLoading(false);
-      }
     });
+    const response = await res.json();
+    if (response.detail != "error") {
+      setNewTax(response);
+      setNewTaxLoading(false);
+    }
   }
 
   useEffect(() => {
-    let token = localStorage.getItem("token");
-    token = JSON.parse(token);
     const endpoint = process.env.NEXT_PUBLIC_ENDPOINT;
     fetch(`${endpoint}/profile`, {
       method: "GET",
@@ -136,9 +133,9 @@ export default function Home() {
             <div className="flex items-center justify-between">
               <hr className="w-1/6 border-black" />
               <div className="text-black text-md lg:text-2xl font-medium">
-                Calculate your Tax
+                Calculate Your Tax
               </div>
-              <hr className="w-1/3 lg:w-2/3 border-black" />
+              <hr className="w-1/6 lg:w-2/3 border-black" />
             </div>
             <div className="bg-gray-900 rounded-lg shadow-lg p-8 m-4 lg:m-12">
               <div className="py-8 lg:py-12 text-center grid grid-cols-1 lg:grid-cols-3 gap-x-6 gap-y-6">
@@ -151,6 +148,7 @@ export default function Home() {
                       setIncome(e.target.value);
                     }}
                     className="p-1 w-full my-4 rounded-lg text-center text-black text-3xl"
+                    required
                   />
                 </div>
                 <div>
@@ -159,7 +157,7 @@ export default function Home() {
                     name="city"
                     id="city"
                     className="p-1 my-4 w-full rounded-lg text-center text-black text-3xl"
-                    onChange={(e) => setCity(e.target.value)}
+                    onClick={(e) => setCity(e.target.value)}
                     style={{
                       background: "white",
                       color: city === "" ? "gray" : "black",
@@ -167,6 +165,7 @@ export default function Home() {
                       border: "none",
                       paddingRight: "2rem",
                     }}
+                    required
                   >
                     <option
                       defaultValue
@@ -200,6 +199,7 @@ export default function Home() {
                       border: "none",
                       paddingRight: "2rem",
                     }}
+                    required
                   >
                     {years.map((year, index) => {
                       return (
@@ -212,7 +212,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="flex justify-center items-center">
-                {totalTax ? (
+                {totalTax?.tax ? (
                   <div className="text-center text-2xl lg:text-4xl">
                     Your Net Payable Tax is <br />{" "}
                     {totalTax.tax?.toLocaleString()} TK
@@ -222,7 +222,7 @@ export default function Home() {
                     type="button"
                     onClick={handleCalculate}
                     disabled={calculateLoading ? true : false}
-                    className="bg-white text-black py-8 px-16 text-3xl hover:bg-gray-100 rounded-lg"
+                    className="bg-white text-black py-4 lg:py-8 px-8 lg:px-16 text-xl lg:text-3xl hover:bg-gray-100 rounded-lg"
                   >
                     {calculateLoading ? (
                       <ImSpinner5 className="text-black h-5 w-5 animate-spin" />
@@ -247,7 +247,7 @@ export default function Home() {
                     <div className="text-black text-md lg:text-2xl font-medium">
                       Tax Report of {currentYear}
                     </div>
-                    <hr className="w-1/3 lg:w-2/3 border-black" />
+                    <hr className="w-1/6 lg:w-2/3 border-black" />
                   </div>
                   <div className="grid grid-cols-1 lg:grid-cols-4 gap-x-6 gap-y-6 p-4 lg:p-12">
                     <div className="bg-gray-900 rounded-lg shadow-lg p-8 text-center">
@@ -305,9 +305,9 @@ export default function Home() {
             <div className="flex items-center justify-between">
               <hr className="w-1/6 border-black" />
               <div className="text-black text-md lg:text-2xl font-medium">
-                Save Previous Information
+                Save Previous Years' Tax
               </div>
-              <hr className="w-1/3 lg:w-2/3 border-black" />
+              <hr className="w-1/6 lg:w-2/3 border-black" />
             </div>
             <div className="bg-gray-900 rounded-lg shadow-lg p-8 m-4 lg:m-12">
               <div className="py-8 lg:py-12 text-center grid grid-cols-1 gap-y-6">
@@ -317,11 +317,12 @@ export default function Home() {
                   </div>
                   <input
                     type="number"
-                    value={income}
+                    value={newIncome}
                     onChange={(e) => {
-                      setIncome(e.target.value);
+                      setNewIncome(e.target.value);
                     }}
                     className="p-1 w-full lg:w-5/6 my-4 rounded-lg text-center text-black text-3xl"
+                    required
                   />
                 </div>
                 <div className="lg:flex justify-between items-center">
@@ -332,7 +333,7 @@ export default function Home() {
                     name="city"
                     id="city"
                     className="p-1 my-4 w-full lg:w-5/6 rounded-lg text-center text-black text-3xl"
-                    onChange={(e) => setCity(e.target.value)}
+                    onClick={(e) => setNewCity(e.target.value)}
                     style={{
                       background: "white",
                       color: city === "" ? "gray" : "black",
@@ -340,6 +341,7 @@ export default function Home() {
                       border: "none",
                       paddingRight: "2rem",
                     }}
+                    required
                   >
                     <option
                       defaultValue
@@ -367,7 +369,7 @@ export default function Home() {
                     name="year"
                     id="year"
                     className="p-1 my-4 w-full lg:w-5/6 rounded-lg text-center text-black text-3xl"
-                    onClick={(e) => setYear(e.target.value)}
+                    onClick={(e) => setNewYear(e.target.value)}
                     style={{
                       background: "white",
                       color: "black",
@@ -375,6 +377,7 @@ export default function Home() {
                       border: "none",
                       paddingRight: "2rem",
                     }}
+                    required
                   >
                     {years.map((year, index) => {
                       return (
@@ -387,7 +390,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="flex justify-center items-center">
-                {newTax ? (
+                {newTax?.tax ? (
                   <div className="text-center text-2xl lg:text-4xl">
                     Saved Succesfully!
                   </div>
@@ -396,7 +399,7 @@ export default function Home() {
                     type="button"
                     onClick={handleNewTax}
                     disabled={newTaxLoading ? true : false}
-                    className="bg-white text-black py-8 px-16 text-3xl hover:bg-gray-100 rounded-lg"
+                    className="bg-white text-black py-4 lg:py-8 px-8 lg:px-16 text-xl lg:text-3xl hover:bg-gray-100 rounded-lg"
                   >
                     {newTaxLoading ? (
                       <ImSpinner5 className="text-black h-5 w-5 animate-spin" />

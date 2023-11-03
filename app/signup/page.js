@@ -42,7 +42,7 @@ export default function page() {
     }).then((res) => res.json().then((data) => setCities(data.cities)));
   }, []);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     setLoading(true);
     e.preventDefault();
     const data = {
@@ -53,16 +53,16 @@ export default function page() {
       city: city,
       password: password,
     };
-    fetch(`${endpoint}/users`, {
+    const res = await fetch(`${endpoint}/users`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
-    }).then((res) => {
-      if (!res.detail === "error") {
-        setLoading(false);
-        router.push("/");
-      }
     });
+    const response = await res.json();
+    if (response.detail != "error") {
+      setLoading(false);
+      router.push("/");
+    }
   }
   return (
     <main className="min-h-screen w-full flex justify-center items-center">
