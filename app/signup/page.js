@@ -1,39 +1,70 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Lottie from "lottie-react";
 import robotLoader from "@/components/LottieFiles/signup.json";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { format, parse } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 export default function page() {
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [emailInput, setEmail] = useState("");
-  const [passwordInput, setPassword] = useState("");
-  const [cPasswordInput, setCPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [cPassword, setCPassword] = useState("");
+  const [dob, setDob] = useState("");
+  const [gender, setGender] = useState("");
+  const [city, setCity] = useState("");
+  const [genders, setGenders] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [viewPassword, setViewPassword] = useState(false);
   const [viewCPassword, setViewCPassword] = useState(false);
 
   const router = useRouter();
+  const handleDateSelect = (selectedDate) => {
+    setDob(selectedDate);
+    setIsPopoverOpen(false);
+    console.log(selectedDate);
+  };
+  const endpoint = process.env.NEXT_PUBLIC_ENDPOINT;
+
+  useEffect(() => {
+    const genders = fetch(`${endpoint}/genders`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    }).then((res) => res.json().then((data) => setGenders(data.genders)));
+    const cities = fetch(`${endpoint}/cities`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    }).then((res) => res.json().then((data) => setCities(data.cities)));
+  }, []);
+
   async function handleSubmit(e) {
     e.preventDefault();
-    let fileName = "default.jpg";
     const data = {
       name: name,
-      email: emailInput,
-      password: passwordInput,
-      url: fileName,
-      phone,
+      email: email,
+      gender: gender,
+      dob: dob.slice(0, 4) + "-" + dob.slice(5, 7) + "-" + dob.slice(8, 10),
+      city: city,
+      password: password,
     };
-    const endpoint = process.env.NEXT_PUBLIC_ENDPOINT;
     const response = await fetch(`${endpoint}/users`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
-    router.push("/login");
+    router.push("/");
   }
   return (
     <main className="min-h-screen w-full flex justify-center items-center">
@@ -47,56 +78,103 @@ export default function page() {
                     Let's Get Started!
                   </h3>
                   <div className="mb-8">
-                    {/* <label
-                        htmlFor="name"
-                        className="mb-3 block text-sm font-medium text-dark dark-text-white"
-                      >
-                        Your Name
-                      </label> */}
                     <input
                       type="text"
                       name="name"
                       placeholder="Full Name"
-                      className="w-full rounded-md border border-transparent py-3 px-6 text-base text-body-color placeholder-body-color shadow-one outline-none focus:border-primary focus-visible:shadow-none dark-bg-[#242B51] dark-shadow-signUp"
+                      className="w-full rounded-md py-3 px-6"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                     />
                   </div>
                   <div className="mb-8">
-                    {/* <label
-                        htmlFor="email"
-                        className="mb-3 block text-sm font-medium text-dark dark-text-white"
-                      >
-                        Your Email
-                      </label> */}
                     <input
                       type="email"
                       name="email"
                       placeholder="Email"
-                      className="w-full rounded-md border border-transparent py-3 px-6 text-base text-body-color placeholder-body-color shadow-one outline-none focus:border-primary focus-visible:shadow-none dark-bg-[#242B51] dark-shadow-signUp"
-                      value={emailInput}
+                      className="w-full rounded-md py-3 px-6"
+                      value={email}
                       onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
+                  <div className="mb-8 pr-4 bg-white rounded-md">
+                    <select
+                      name="gender"
+                      id="gender"
+                      className="w-full rounded-md py-3 px-6"
+                      onChange={(e) => setGender(e.target.value)}
+                      style={{
+                        background: "white",
+                        color: gender === "" ? "gray" : "black",
+                        outline: "none",
+                        border: "none",
+                        paddingRight: "2rem",
+                      }}
+                    >
+                      <option defaultValue value="">
+                        Gender
+                      </option>
+                      {genders.map((gender, index) => {
+                        return (
+                          <option key={index} value={gender}>
+                            {gender.charAt(0).toUpperCase() + gender.slice(1)}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
                   <div className="mb-8">
-                    {/* <label
-                        htmlFor="password"
-                        className="mb-3 block text-sm font-medium text-dark dark-text-white"
-                      >
-                        Your Password
-                      </label> */}
+                    <input
+                      type="date"
+                      name="dob"
+                      placeholder="Date of Birth"
+                      className="w-full rounded-md py-3 px-6"
+                      value={dob ? dob : "Date of Birth"}
+                      onChange={(e) => {
+                        const inputValue = e.target.value;
+                        setDob(inputValue);
+                      }}
+                    />
+                  </div>
+                  <div className="mb-8 pr-4 bg-white rounded-md">
+                    <select
+                      name="city"
+                      id="city"
+                      className="w-full rounded-md py-3 px-6"
+                      onChange={(e) => setCity(e.target.value)}
+                      style={{
+                        background: "white",
+                        color: city === "" ? "gray" : "black",
+                        outline: "none",
+                        border: "none",
+                        paddingRight: "2rem",
+                      }}
+                    >
+                      <option defaultValue value="">
+                        City
+                      </option>
+                      {cities.map((city, index) => {
+                        return (
+                          <option key={index} value={city}>
+                            {city.charAt(0).toUpperCase() + city.slice(1)}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
+                  <div className="mb-8">
                     <div className="flex">
                       <input
                         type={`${viewPassword ? "text" : "password"}`}
                         name="password"
                         placeholder="Password"
                         className={`w-full rounded-md ${
-                          passwordInput ? "rounded-r-none" : ""
-                        } border border-transparent py-3 px-6 text-base text-body-color placeholder-body-color shadow-one outline-none focus-visible:shadow-none dark-bg-[#242B51] dark-shadow-signUp`}
-                        value={passwordInput}
+                          password ? "rounded-r-none" : ""
+                        } py-3 px-6 text-base text-body-color placeholder-body-color shadow-one outline-none focus-visible:shadow-none dark-bg-[#242B51] dark-shadow-signUp`}
+                        value={password}
                         onChange={(e) => setPassword(e.target.value)}
                       />
-                      {passwordInput && (
+                      {password && (
                         <button
                           type="button"
                           onClick={() => {
@@ -114,24 +192,18 @@ export default function page() {
                     </div>
                   </div>
                   <div className="mb-8">
-                    {/* <label
-                        htmlFor="cpassword"
-                        className="mb-3 block text-sm font-medium text-dark dark-text-white"
-                      >
-                        Confirm your Password
-                      </label> */}
                     <div className="flex">
                       <input
                         type={`${viewCPassword ? "text" : "password"}`}
                         name="cpassword"
                         placeholder="Confirm Password"
                         className={`w-full rounded-md ${
-                          cPasswordInput ? "rounded-r-none" : ""
-                        } border border-transparent py-3 px-6 text-base text-body-color placeholder-body-color shadow-one outline-none focus-visible:shadow-none dark-bg-[#242B51] dark-shadow-signUp`}
-                        value={cPasswordInput}
+                          cPassword ? "rounded-r-none" : ""
+                        } py-3 px-6 text-base text-body-color placeholder-body-color shadow-one outline-none focus-visible:shadow-none dark-bg-[#242B51] dark-shadow-signUp`}
+                        value={cPassword}
                         onChange={(e) => setCPassword(e.target.value)}
                       />
-                      {cPasswordInput && (
+                      {cPassword && (
                         <button
                           type="button"
                           onClick={() => {

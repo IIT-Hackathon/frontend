@@ -35,12 +35,6 @@ export default function page() {
                 Welcome Back!
               </h3>
               <div className="mb-8">
-                {/* <label
-                    htmlFor="email"
-                    className="mb-3 block text-sm font-medium text-dark dark-text-white"
-                  >
-                    Your Email
-                  </label> */}
                 <input
                   type="email"
                   name="email"
@@ -51,12 +45,6 @@ export default function page() {
                 />
               </div>
               <div className="mb-8">
-                {/* <label
-                        htmlFor="password"
-                        className="mb-3 block text-sm font-medium text-dark dark-text-white"
-                      >
-                        Your Password
-                      </label> */}
                 <div className="flex">
                   <input
                     type={`${viewPassword ? "text" : "password"}`}
