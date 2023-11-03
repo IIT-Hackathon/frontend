@@ -36,8 +36,12 @@ export default function Home() {
     2011, 2010, 2009, 2008, 2007, 2006, 2005, 2004, 2003, 2002, 2001, 2000,
   ];
 
-  let token = localStorage.getItem("token");
-  token = JSON.parse(token);
+  useEffect(() => {
+    if (window) {
+      let token = localStorage.getItem("token");
+      token = JSON.parse(token);
+    }
+  }, [window]);
 
   async function handleCalculate(e) {
     setCalculateLoading(true);
@@ -84,6 +88,7 @@ export default function Home() {
     if (response.detail != "error") {
       setNewTax(response);
       setNewTaxLoading(false);
+      window.location.reload();
     }
   }
 
@@ -113,7 +118,7 @@ export default function Home() {
         console.log(data);
         setCities(data.cities);
       });
-    fetch(`${endpoint}/current_report?year=2022`, {
+    fetch(`${endpoint}/current_report?year=${currentYear}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

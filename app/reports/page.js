@@ -14,16 +14,15 @@ import {
 import LoaderEffect from "@/components/LoaderEffect";
 
 const page = () => {
-  let token = localStorage.getItem("token");
-  token = JSON.parse(token);
+  useEffect(() => {
+    if (window) {
+      let token = localStorage.getItem("token");
+      token = JSON.parse(token);
+    }
+  }, [window]);
 
   const [chartData, setChartData] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  const data = [
-    { name: 2023, income: 524000, tax: 81000 },
-    { name: 2022, income: 513000, tax: 78200 },
-  ];
 
   const [reports, setReports] = useState(null);
 
@@ -56,7 +55,7 @@ const page = () => {
       <nav className="fixed top-0 w-screen z-50 bg-white">
         <Hero landing={true} />
       </nav>
-      <section className="min-h-screen flex pt-20">
+      <section className="min-h-screen pt-20">
         {loading ? (
           <div className="min-w-full mt-5 overflow-x-auto flex justify-center">
             <LoaderEffect />
@@ -67,7 +66,7 @@ const page = () => {
               <BarChart
                 width={500}
                 height={300}
-                data={data}
+                data={chartData}
                 margin={{
                   top: 20,
                   right: 30,
