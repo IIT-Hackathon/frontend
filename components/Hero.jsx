@@ -57,9 +57,9 @@ export default function Hero({ landing = false }) {
         {signedIn && (
           <div className="space-x-4 lg:flex hidden">
             <p
-              onClick={() => router.push("/")}
+              onClick={() => router.push("/dashboard")}
               className={`${
-                pathname == "/" && "outline text-white outline-1 outline-white"
+                pathname == "/dashboard" && "outline text-white outline-1 outline-white"
               } hover:outline text-white cursor-pointer outline-1 outline-gray-700 py-2 px-4 rounded-lg transition-all .5s`}
             >
               Dashboard

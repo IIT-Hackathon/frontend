@@ -124,7 +124,7 @@ const page = () => {
           </div>
         )}
         <div className="px-4 lg:px-12 mt-4 lg:mt-12">
-          <Table dataSource={reports} columns={columns} />
+          <Table loading={loading} dataSource={reports} columns={columns} />
         </div>
       </section>
     </main>

@@ -1,6 +1,6 @@
 "use client";
 
-import Hero from "../components/Hero";
+import Hero from "@/components/Hero";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import LoaderEffect from "@/components/LoaderEffect";
@@ -337,7 +337,7 @@ export default function Home() {
             <div className="flex items-center justify-between">
               <hr className="w-1/6 border-black" />
               <div className="text-black text-md lg:text-2xl font-medium">
-                Save Previous Years' Tax
+                Save Reports of Past Years
               </div>
               <hr className="w-1/6 lg:w-2/3 border-black" />
             </div>
