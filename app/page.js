@@ -1,9 +1,5 @@
 "use client";
-import Image from "next/image";
-import Lottie from "lottie-react";
-import landing from "@/components/LottieFiles/landing.json";
 
-import Link from "next/link";
 import Hero from "../components/Hero";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -17,11 +13,13 @@ export default function Home() {
   const [edit, setEdit] = useState(false);
   const [city, setCity] = useState("");
   const [loading, setLoading] = useState(true);
-  const [apiLoading, setApiLoading] = useState(false);
+  const [calculateLoading, setCalculateLoading] = useState(false);
+  const [newTaxLoading, setNewTaxLoading] = useState(false);
   const [income, setIncome] = useState(undefined);
   const [year, setYear] = useState(undefined);
   const [cities, setCities] = useState([]);
   const [totalTax, setTotalTax] = useState(null);
+  const [newTax, setNewTax] = useState(null);
 
   const currentYear = new Date().getFullYear();
 
@@ -31,7 +29,7 @@ export default function Home() {
   ];
 
   function handleCalculate(e) {
-    setApiLoading(true);
+    setCalculateLoading(true);
     e.preventDefault();
     const data = {
       income: parseInt(income),
@@ -52,7 +50,34 @@ export default function Home() {
       const response = res.json();
       if (!response.detail === "error") {
         setTotalTax(response);
-        setApiLoading(false);
+        setCalculateLoading(false);
+      }
+    });
+  }
+
+  function handleNewTax(e) {
+    setNewTaxLoading(true);
+    e.preventDefault();
+    const data = {
+      income: parseInt(income),
+      city: city,
+      year: parseInt(year),
+    };
+    let token = localStorage.getItem("token");
+    token = JSON.parse(token);
+    const endpoint = process.env.NEXT_PUBLIC_ENDPOINT;
+    fetch(`${endpoint}/new_tax`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token?.access_token,
+      },
+      body: JSON.stringify(data),
+    }).then((res) => {
+      const response = res.json();
+      if (!response.detail === "error") {
+        setNewTax(response);
+        setNewTaxLoading(false);
       }
     });
   }
@@ -196,10 +221,10 @@ export default function Home() {
                   <button
                     type="button"
                     onClick={handleCalculate}
-                    disabled={apiLoading ? true : false}
+                    disabled={calculateLoading ? true : false}
                     className="bg-white text-black py-8 px-16 text-3xl hover:bg-gray-100 rounded-lg"
                   >
-                    {apiLoading ? (
+                    {calculateLoading ? (
                       <ImSpinner5 className="text-black h-5 w-5 animate-spin" />
                     ) : (
                       "Calculate"
@@ -285,24 +310,28 @@ export default function Home() {
               <hr className="w-1/3 lg:w-2/3 border-black" />
             </div>
             <div className="bg-gray-900 rounded-lg shadow-lg p-8 m-4 lg:m-12">
-              <div className="py-8 lg:py-12 text-center grid grid-cols-1 lg:grid-cols-3 gap-x-6 gap-y-6">
-                <div>
-                  <div className="text-3xl">Enter Yearly Income</div>
+              <div className="py-8 lg:py-12 text-center grid grid-cols-1 gap-y-6">
+                <div className="lg:flex justify-between items-center">
+                  <div className="text-xl lg:text-3xl text-left lg:text-center">
+                    Enter Yearly Income
+                  </div>
                   <input
                     type="number"
                     value={income}
                     onChange={(e) => {
                       setIncome(e.target.value);
                     }}
-                    className="p-1 w-full my-4 rounded-lg text-center text-black text-3xl"
+                    className="p-1 w-full lg:w-5/6 my-4 rounded-lg text-center text-black text-3xl"
                   />
                 </div>
-                <div>
-                  <div className="text-3xl">Select City</div>
+                <div className="lg:flex justify-between items-center">
+                  <div className="text-xl lg:text-3xl text-left lg:text-center">
+                    Select City
+                  </div>
                   <select
                     name="city"
                     id="city"
-                    className="p-1 my-4 w-full rounded-lg text-center text-black text-3xl"
+                    className="p-1 my-4 w-full lg:w-5/6 rounded-lg text-center text-black text-3xl"
                     onChange={(e) => setCity(e.target.value)}
                     style={{
                       background: "white",
@@ -330,12 +359,14 @@ export default function Home() {
                     })}
                   </select>
                 </div>
-                <div>
-                  <div className="text-3xl">Select Year</div>
+                <div className="lg:flex justify-between items-center">
+                  <div className="text-xl lg:text-3xl text-left lg:text-center">
+                    Select Year
+                  </div>
                   <select
                     name="year"
                     id="year"
-                    className="p-1 my-4 w-full rounded-lg text-center text-black text-3xl"
+                    className="p-1 my-4 w-full lg:w-5/6 rounded-lg text-center text-black text-3xl"
                     onClick={(e) => setYear(e.target.value)}
                     style={{
                       background: "white",
@@ -356,18 +387,22 @@ export default function Home() {
                 </div>
               </div>
               <div className="flex justify-center items-center">
-                {totalTax ? (
+                {newTax ? (
                   <div className="text-center text-2xl lg:text-4xl">
-                    Your Net Payable Tax is <br />{" "}
-                    {totalTax.tax?.toLocaleString()} TK
+                    Saved Succesfully!
                   </div>
                 ) : (
                   <button
                     type="button"
-                    onClick={handleCalculate}
+                    onClick={handleNewTax}
+                    disabled={newTaxLoading ? true : false}
                     className="bg-white text-black py-8 px-16 text-3xl hover:bg-gray-100 rounded-lg"
                   >
-                    Calculate
+                    {newTaxLoading ? (
+                      <ImSpinner5 className="text-black h-5 w-5 animate-spin" />
+                    ) : (
+                      "Save Information"
+                    )}
                   </button>
                 )}
               </div>
