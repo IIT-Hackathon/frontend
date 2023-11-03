@@ -11,21 +11,6 @@ import Calculator from '@/components/Calculator'
 
 export default function Home() {
   const router = useRouter()
-  
-  useEffect(() => {
-    if(window) {
-      let token = localStorage.getItem("token")
-      token = JSON.parse(token)
-      if(token != null) {
-        if(token.role == 'DOCTOR') {
-          router.push(`/doctor_dashboard/${token.id}`)
-        }
-        else if(token.role == 'HOSPITAL') {
-          router.push(`/hospital_dashboard/${token.id}`)
-        }
-      }
-    }
-  }, [])
   return (
     <main className="min-h-screen">
       <nav className='sticky z-50 bg-white'>

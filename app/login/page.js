@@ -4,17 +4,20 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function page() {
-  const [emailInput, setEmail] = useState("");
-  const [passwordInput, setPassword] = useState("");
+  const { toast } = useToast();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [viewPassword, setViewPassword] = useState(false);
   const router = useRouter();
   async function handleSubmit(e) {
     e.preventDefault();
     const data = {
-      username: emailInput,
-      password: passwordInput,
+      username: email,
+      password: password,
     };
     const endpoint = process.env.NEXT_PUBLIC_ENDPOINT;
     const response = await fetch(`${endpoint}/login`, {
@@ -24,6 +27,7 @@ export default function page() {
     });
     const ans = await response.json();
     localStorage.setItem("token", JSON.stringify(ans));
+    router.push("/")
   }
   return (
     <main className="min-h-screen w-full flex justify-center items-center bg-white">
@@ -40,7 +44,7 @@ export default function page() {
                   name="email"
                   placeholder="Email"
                   className="w-full rounded-md border border-transparent py-3 px-6 text-base text-body-color placeholder-body-color shadow-one outline-none focus-visible:shadow-none dark-bg-[#242B51] dark-shadow-signUp"
-                  value={emailInput}
+                  value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
@@ -51,12 +55,12 @@ export default function page() {
                     name="password"
                     placeholder="Password"
                     className={`w-full rounded-md ${
-                      passwordInput ? "rounded-r-none" : ""
+                      password ? "rounded-r-none" : ""
                     } border border-transparent py-3 px-6 text-base text-body-color placeholder-body-color shadow-one outline-none focus-visible:shadow-none dark-bg-[#242B51] dark-shadow-signUp`}
-                    value={passwordInput}
+                    value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
-                  {passwordInput && (
+                  {password && (
                     <button
                       type="button"
                       onClick={() => {
