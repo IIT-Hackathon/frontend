@@ -96,43 +96,45 @@ export default function Home() {
 
   useEffect(() => {
     const endpoint = process.env.NEXT_PUBLIC_ENDPOINT;
-    fetch(`${endpoint}/profile`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token?.access_token,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setProfile(data);
-      });
-    fetch(`${endpoint}/cities`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token?.access_token,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setCities(data.cities);
-      });
-    fetch(`${endpoint}/current_report?year=${currentYear}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token?.access_token,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setCurrentReport(data);
-        setLoading(false);
-      });
+    if (token != null) {
+      fetch(`${endpoint}/profile`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token?.access_token,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          setProfile(data);
+        });
+      fetch(`${endpoint}/cities`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token?.access_token,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          setCities(data.cities);
+        });
+      fetch(`${endpoint}/current_report?year=${currentYear}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token?.access_token,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          setCurrentReport(data);
+          setLoading(false);
+        });
+    }
   }, [token]);
 
   return (
