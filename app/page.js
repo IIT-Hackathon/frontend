@@ -5,6 +5,12 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import LoaderEffect from "@/components/LoaderEffect";
 import { ImSpinner5 } from "react-icons/im";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 export default function Home() {
   const currentYear = new Date().getFullYear();
@@ -107,7 +113,7 @@ export default function Home() {
         console.log(data);
         setCities(data.cities);
       });
-    fetch(`${endpoint}/current_report?year=${currentYear}`, {
+    fetch(`${endpoint}/current_report?year=2022`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -215,7 +221,7 @@ export default function Home() {
                 {totalTax?.tax ? (
                   <div className="text-center text-2xl lg:text-4xl">
                     Your Net Payable Tax is <br />{" "}
-                    {totalTax.tax?.toLocaleString()} TK
+                    {totalTax.tax?.toLocaleString()} BDT
                   </div>
                 ) : (
                   <button
@@ -249,7 +255,7 @@ export default function Home() {
                     </div>
                     <hr className="w-1/6 lg:w-2/3 border-black" />
                   </div>
-                  <div className="grid grid-cols-1 lg:grid-cols-4 gap-x-6 gap-y-6 p-4 lg:p-12">
+                  <div className="grid grid-cols-1 lg:grid-cols-4 gap-x-6 gap-y-6 px-4 pt-4 lg:px-12 lg:pt-12">
                     <div className="bg-gray-900 rounded-lg shadow-lg p-8 text-center">
                       <div className="text-xl lg:text-3xl mb-4">
                         Total Yearly Income
@@ -283,6 +289,25 @@ export default function Home() {
                           currentReport.city?.slice(1)}
                       </div>
                     </div>
+                  </div>
+                  <div className="text-black px-4 pb-4 pt-2 lg:px-12 lg:pb-12 lg:pt-4">
+                    <Accordion type="single" collapsible className="w-full">
+                      <AccordionItem value="item-1">
+                        <AccordionTrigger className="text-lg lg:text-2xl">
+                          View Net Payable Tax Breakdown
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          {JSON.parse(currentReport.breakdown).map((value) => {
+                            return (
+                              <div className="flex justify-between items-center text-lg lg:text-2xl px-4 lg:px-16 border-b">
+                                <div>{value.message}</div>
+                                <div>{value.amount + " BDT"}</div>
+                              </div>
+                            );
+                          })}
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
                   </div>
                 </div>
               ) : (
