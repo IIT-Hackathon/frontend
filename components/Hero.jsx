@@ -59,13 +59,20 @@ export default function Hero({ landing = false }) {
         {signedIn && (
           <div className="space-x-4 lg:flex hidden">
             <p
-              onClick={() => TokenCheckHandler("/ai")}
+              onClick={() => TokenCheckHandler("/")}
               className={`${
-                pathname == "/ai" &&
-                "outline text-white outline-1 outline-white"
+                pathname == "/" && "outline text-white outline-1 outline-white"
               } hover:outline text-white cursor-pointer outline-1 outline-gray-700 py-2 px-4 rounded-lg transition-all .5s`}
             >
-              My Dashboard
+              Dashboard
+            </p>
+            <p
+              onClick={() => TokenCheckHandler("/reports")}
+              className={`${
+                pathname == "/reports" && "outline text-white outline-1 outline-white"
+              } hover:outline text-white cursor-pointer outline-1 outline-gray-700 py-2 px-4 rounded-lg transition-all .5s`}
+            >
+              Reports
             </p>
           </div>
         )}
@@ -101,11 +108,8 @@ export default function Hero({ landing = false }) {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="bg-white border-2 border-black rounded-md mt-4 mr-8 z-50">
                       <DropdownMenuItem className="px-2 py-4 my-4 text-white cursor-pointer hover:outline-none hover:bg-gray-100">
-                        <Link
-                          className="text-black p-2"
-                          href={`/dashboard/${token}/upcoming`}
-                        >
-                          My DashBoard
+                        <Link className="text-black p-2" href={`/`}>
+                          DashBoard
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
