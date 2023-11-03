@@ -12,12 +12,49 @@ import {
   Bar,
 } from "recharts";
 import LoaderEffect from "@/components/LoaderEffect";
+import { Table } from "antd";
 
 const page = () => {
   const [chartData, setChartData] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const [reports, setReports] = useState(null);
+
+  const columns = [
+    {
+      title: "Year",
+      dataIndex: "year",
+      key: "year",
+      sorter: (a, b) => a.year - b.year,
+    },
+    {
+      title: "Total Income",
+      dataIndex: "income",
+      key: "income",
+      render: (text) => <p>{text?.toLocaleString() + " BDT"}</p>,
+      sorter: (a, b) => a.income - b.income,
+    },
+    {
+      title: "Taxable Income",
+      dataIndex: "taxable_income",
+      key: "taxable_income",
+      render: (text) => <p>{text?.toLocaleString() + " BDT"}</p>,
+      sorter: (a, b) => a.taxable_income - b.taxable_income,
+    },
+    {
+      title: "Net Payable Tax",
+      dataIndex: "tax",
+      key: "tax",
+      render: (text) => <p>{text?.toLocaleString() + " BDT"}</p>,
+      sorter: (a, b) => a.tax - b.tax,
+    },
+    {
+      title: "City",
+      dataIndex: "city",
+      key: "city",
+      render: (text) => <p>{text?.charAt(0).toUpperCase() + text?.slice(1)}</p>,
+    },
+  ];
 
   useEffect(() => {
     setLoading(true);
@@ -52,6 +89,13 @@ const page = () => {
         <Hero landing={true} />
       </nav>
       <section className="min-h-screen pt-20">
+        <div className="flex items-center justify-between">
+          <hr className="w-1/6 border-black" />
+          <div className="text-black text-md lg:text-2xl mt-5 font-medium">
+            Reports of Previous Years
+          </div>
+          <hr className="w-1/6 lg:w-2/3 border-black" />
+        </div>
         {loading ? (
           <div className="min-w-full mt-5 overflow-x-auto flex justify-center">
             <LoaderEffect />
@@ -59,7 +103,7 @@ const page = () => {
         ) : (
           <div className="min-w-full mt-5 overflow-x-auto flex justify-center">
             <BarChart
-              width={500}
+              width={window.innerWidth - window.innerWidth * 0.05}
               height={300}
               data={chartData}
               margin={{
@@ -79,6 +123,9 @@ const page = () => {
             </BarChart>
           </div>
         )}
+        <div className="px-4 lg:px-12 mt-4 lg:mt-12">
+          <Table dataSource={reports} columns={columns} />
+        </div>
       </section>
     </main>
   );
