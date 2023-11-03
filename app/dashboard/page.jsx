@@ -1,6 +1,6 @@
 "use client";
 
-import Hero from "../components/Hero";
+import Hero from "@/components/Hero";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import LoaderEffect from "@/components/LoaderEffect";
@@ -12,6 +12,12 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
+<<<<<<< HEAD:components/HomeComponent.jsx
+const HomeComponent = () => {
+  return <div></div>;
+};
+export default HomeComponent;
+=======
 export default function Home() {
   const currentYear = new Date().getFullYear();
   const router = useRouter();
@@ -96,43 +102,45 @@ export default function Home() {
 
   useEffect(() => {
     const endpoint = process.env.NEXT_PUBLIC_ENDPOINT;
-    fetch(`${endpoint}/profile`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token?.access_token,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setProfile(data);
-      });
-    fetch(`${endpoint}/cities`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token?.access_token,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setCities(data.cities);
-      });
-    fetch(`${endpoint}/current_report?year=${currentYear}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token?.access_token,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setCurrentReport(data);
-        setLoading(false);
-      });
+    if (token != null) {
+      fetch(`${endpoint}/profile`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token?.access_token,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          setProfile(data);
+        });
+      fetch(`${endpoint}/cities`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token?.access_token,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          setCities(data.cities);
+        });
+      fetch(`${endpoint}/current_report?year=${currentYear}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token?.access_token,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          setCurrentReport(data);
+          setLoading(false);
+        });
+    }
   }, [token]);
 
   return (
@@ -337,7 +345,7 @@ export default function Home() {
             <div className="flex items-center justify-between">
               <hr className="w-1/6 border-black" />
               <div className="text-black text-md lg:text-2xl font-medium">
-                Save Previous Years' Tax
+                Save Reports of Past Years
               </div>
               <hr className="w-1/6 lg:w-2/3 border-black" />
             </div>
@@ -448,3 +456,4 @@ export default function Home() {
     </main>
   );
 }
+>>>>>>> develop:app/dashboard/page.jsx
