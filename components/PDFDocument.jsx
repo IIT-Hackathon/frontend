@@ -1,57 +1,31 @@
-import React from 'react';
-import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
+import React, { useEffect, useState } from "react";
+import { Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
+import { Key } from "lucide-react";
 
 const pageStyle = {
   paddingTop: 16,
   paddingHorizontal: 40,
-  paddingBottom: 56
+  paddingBottom: 56,
 };
 
 const tableStyle = {
   display: "table",
   width: "auto",
-  marginTop : 10
+  marginTop: 10,
 };
 
 const tableRowStyle = {
   flexDirection: "row",
-  height : 50
+  height: 50,
 };
 
-const firstTableColHeaderStyle = {
-  width: "30%",
-  borderStyle: "solid",
-  borderColor: "#000",
-  borderBottomColor: "#000",
-  borderWidth: 1,
-  backgroundColor: "#bdbdbd"
-};
-
-const tableColHeaderStyle = {
-  width: "30%",
-  borderStyle: "solid",
-  borderColor: "#000",
-  borderBottomColor: "#000",
-  borderWidth: 1,
-  borderLeftWidth: 0,
-  backgroundColor: "#bdbdbd"
-};
 const tableColHeaderStyle2 = {
   width: "70%",
   borderStyle: "solid",
   borderColor: "#000",
   borderBottomColor: "#000",
   borderWidth: 1,
-  borderLeftWidth: 0,
-  backgroundColor: "#bdbdbd"
-};
-
-const firstTableColStyle = {
-  width: "30%",
-  borderStyle: "solid",
-  borderColor: "#000",
-  borderWidth: 1,
-  borderTopWidth: 0
+  backgroundColor: "#bdbdbd",
 };
 
 const tableColStyle2 = {
@@ -59,84 +33,145 @@ const tableColStyle2 = {
   borderStyle: "solid",
   borderColor: "#000",
   borderWidth: 1,
-  borderLeftWidth: 0,
-  borderTopWidth: 0
+  borderTopWidth: 0,
 };
 
 const tableCellHeaderStyle = {
   textAlign: "center",
   margin: 4,
   fontSize: 12,
-  fontWeight: "bold"
+  fontWeight: "bold",
 };
 
 const tableCellStyle = {
   textAlign: "center",
   margin: 5,
-  fontSize: 10
+  fontSize: 10,
 };
 
-const createTableHeader = () => {
+const headers = [];
+const getHeaders = (input) => {
+  headers.length = 0; // Clear the array before adding new headers
+
+  if (input.hasOwnProperty("year")) {
+    headers.push({ key: "year", value: "Year" });
+  }
+  if (input.hasOwnProperty("income")) {
+    headers.push({ key: "income", value: "Income" });
+  }
+  if (input.hasOwnProperty("taxable_income")) {
+    headers.push({ key: "taxable_income", value: "Taxable Income" });
+  }
+  if (input.hasOwnProperty("tax")) {
+    headers.push({ key: "tax", value: "Net Payable Tax" });
+  }
+  if (input.hasOwnProperty("city")) {
+    headers.push({ key: "city", value: "City" });
+  }
+};
+
+const createTableHeader = (record) => {
   return (
     <View style={tableRowStyle} fixed>
-
-      <View style={firstTableColHeaderStyle}>
-        <Text style={tableCellHeaderStyle}>Medicine Name</Text>
-      </View>
-
-      <View style={tableColHeaderStyle2}>
-        <Text style={tableCellHeaderStyle}>Instruction</Text>
-      </View>
-
+      {record.map((item, index) => {
+        return (
+          <View key={index} style={tableColHeaderStyle2}>
+            <Text style={tableCellHeaderStyle}>{item.value}</Text>
+          </View>
+        );
+      })}
     </View>
   );
 };
 
-const createTableRow = (medicine) => {
+const createTableRow = (record, input) => {
   return (
     <View style={tableRowStyle}>
-
-      <View style={firstTableColStyle}>
-        <Text style={tableCellStyle}>{medicine.medicineName}</Text>
-      </View>
-
-      <View style={tableColStyle2}>
-        <Text style={tableCellStyle}>{medicine.rule}</Text>
-      </View>
-
+      {record.map((item, index) => {
+        return (
+          <View key={index} style={tableColStyle2}>
+            <Text style={tableCellStyle}>{input[item.key]}</Text>
+          </View>
+        );
+      })}
     </View>
   );
 };
 
-function PdfDocument({ prescription }) {
-  console.log(prescription[2])
+function PdfDocument({ input }) {
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    getHeaders(input);
+    console.log(headers);
+    setLoading(false);
+  }, []);
+  const breakdown = JSON.parse(input.breakdown);
   return (
     <Document>
-      <Page
-        style={pageStyle}
-        size="A4"
-        orientation="portrait">
+      <Page style={pageStyle} size="A4" orientation="portrait">
         <View>
-          <Text style={{ fontSize : 12, color : "#333" }}>Dr. {prescription[2].doctor.firstName} {prescription[2].doctor.lastName}</Text>
+          <Text style={{ fontSize: 24, color: "#333", textAlign: "center" }}>
+            Yearly Tax Report of {input.year}
+          </Text>
         </View>
-        <View>
-          <Text style={{ fontSize : 12, color : "#333" }}>{prescription[2].doctor.degrees}</Text>
+
+        <View style={{ marginVertical: 5, fontSize: 12, color: "#333" }}>
+          <Text>
+            ---------------------------------------------------------------------------------------------------------------------------------
+          </Text>
         </View>
-        <View style={{ marginBottom : 30, fontSize : 12, color : "#333"}}>
-          <Text>{prescription[2].doctor.currentHospital}</Text>
+        <View
+          style={{
+            marginTop: 15,
+            marginBottom: 5,
+            fontSize: 12,
+            color: "#333",
+            textAlign: "center",
+          }}
+        >
+          <Text>Tax Report of {input.year}</Text>
         </View>
-        <View style={{ marginVertical : 5, fontSize : 12, color : "#333"}}>
-          <Text>---------------------------------------------------------------------------------------------------------------------------------</Text>
+        {!loading && (
+          <View style={tableStyle}>
+            {createTableHeader(headers)}
+            {createTableRow(headers, input)}
+          </View>
+        )}
+
+        <View
+          style={{
+            marginTop: 15,
+            marginBottom: 5,
+            fontSize: 12,
+            color: "#333",
+            textAlign: "center",
+          }}
+        >
+          <Text>Net Payable Tax Breakdown</Text>
         </View>
-        <View style={tableStyle}>
-          {createTableHeader()}
-          {
-            prescription[0].medicine.map(medicine => createTableRow(medicine))
-          }
-        </View>
-        <View style={{ marginTop : 30 }}>
-          <Text style={{ fontSize : 14 }}>Special Instructions : {prescription[1].instruction}</Text>
-        </View>
+        {/* <View style={{ marginTop: 30 }}>
+<Text style={{ fontSize: 14 }}>
+Special Instructions : {prescription[1].instruction}
+</Text>
+</View> */}
+        {breakdown.map((item, index) => {
+          return (
+            <View
+              style={{
+                width: "100%",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                fontSize: 12,
+                paddingLeft: 10,
+                paddingRight: 10,
+              }}
+            >
+              <Text style={{ marginBottom: 2 }}>{item.message}</Text>
+              <Text style={{ marginBottom: 2 }}>{item.amount}</Text>
+            </View>
+          );
+        })}
       </Page>
     </Document>
   );
