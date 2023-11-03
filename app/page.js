@@ -22,14 +22,11 @@ export default function Home() {
   const [totalTax, setTotalTax] = useState(null);
 
   const currentYear = new Date().getFullYear();
-  const endpoint = process.env.NEXT_PUBLIC_ENDPOINT;
 
   const years = [
     2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012,
     2011, 2010, 2009, 2008, 2007, 2006, 2005, 2004, 2003, 2002, 2001, 2000,
   ];
-  let token = localStorage.getItem("token");
-  token = JSON.parse(token);
 
   function handleCalculate(e) {
     e.preventDefault();
@@ -38,18 +35,28 @@ export default function Home() {
       city: city,
       year: year,
     };
+    let token = localStorage.getItem("token");
+    token = JSON.parse(token);
+    const endpoint = process.env.NEXT_PUBLIC_ENDPOINT;
     fetch(`${endpoint}/new_tax`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": "Bearer" + token.access_token,
+        Authorization: "Bearer " + token.access_token,
       },
       body: JSON.stringify(data),
-    }).then((res) => console.log(res.json()));
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setTotalTax(data);
+      });
   }
 
   useEffect(() => {
     setLoading(true);
+    let token = localStorage.getItem("token");
+    token = JSON.parse(token);
+    const endpoint = process.env.NEXT_PUBLIC_ENDPOINT;
     fetch(`${endpoint}/profile`, {
       method: "GET",
       headers: {
@@ -173,7 +180,7 @@ export default function Home() {
               <hr className="w-1/3 lg:w-2/3 border-black" />
             </div>
             <div className="bg-gray-900 rounded-lg shadow-lg p-8 m-4 lg:m-12">
-              <div className="py-8 lg:py-12 text-center grid grid-cols-3 gap-x-6">
+              <div className="py-8 lg:py-12 text-center grid grid-cols-1 lg:grid-cols-3 gap-x-6 gap-y-6">
                 <div>
                   <div className="text-3xl">Enter Yearly Income</div>
                   <input
@@ -241,16 +248,19 @@ export default function Home() {
                 </div>
               </div>
               <div className="flex justify-center items-center">
-                <button
-                  type="button"
-                  onClick={handleCalculate}
-                  className="bg-white text-black py-8 px-16 text-3xl hover:bg-gray-100 rounded-lg"
-                >
-                  Calculate
-                </button>
-                <div className="text-center text-4xl">
-                  Your Net Payable Tax is {"4000"}
-                </div>
+                {totalTax ? (
+                  <div className="text-center text-2xl lg:text-4xl">
+                    Your Net Payable Tax is <br/> {totalTax.tax?.toLocaleString()} TK
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleCalculate}
+                    className="bg-white text-black py-8 px-16 text-3xl hover:bg-gray-100 rounded-lg"
+                  >
+                    Calculate
+                  </button>
+                )}
               </div>
             </div>
           </div>
