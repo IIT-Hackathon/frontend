@@ -15,6 +15,7 @@ export default function page() {
   const [viewPassword, setViewPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
   async function handleSubmit(e) {
     setLoading(true);
     e.preventDefault();

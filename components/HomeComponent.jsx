@@ -35,8 +35,14 @@ const HomeComponent = () => {
     2011, 2010, 2009, 2008, 2007, 2006, 2005, 2004, 2003, 2002, 2001, 2000,
   ];
 
-  let token = localStorage.getItem("token");
-  token = JSON.parse(token);
+  const [token, setToken] = useState(null);
+  useEffect(() => {
+    let token = localStorage.getItem("token");
+    token = JSON.parse(token);
+    if (token) {
+      setToken(token);
+    }
+  }, []);
 
   async function handleCalculate(e) {
     setCalculateLoading(true);
