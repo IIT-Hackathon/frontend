@@ -20,6 +20,10 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Modify env file
+        run: |
+          echo -e "NEXT_PUBLIC_ENDPOINT = ${{ secrets.PROD_BACKEND_URL }}" > ./.env
+          
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
