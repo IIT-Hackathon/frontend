@@ -157,6 +157,7 @@ Special Instructions : {prescription[1].instruction}
         {breakdown.map((item, index) => {
           return (
             <View
+              key={index}
               style={{
                 width: "100%",
                 display: "flex",
