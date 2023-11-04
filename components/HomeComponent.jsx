@@ -1,10 +1,6 @@
 "use client";
-import { Nunito, Oswald } from "next/font/google";
 import Lottie from "lottie-react";
 import landing from "@/components/LottieFiles/landing.json";
-
-const nunito = Nunito({ subsets: ["latin"] });
-const oswald = Oswald({ subsets: ["latin"] });
 
 import Link from "next/link";
 
@@ -21,7 +17,7 @@ export default function HomeComponent() {
           <h1
             className={`text-4xl bg-gradient-to-r from-[#2a393f] via-[#1d0d30] to-[#532369] bg-clip-text text-transparent p-6`}
           >
-            You Can Save and Calculate Your Tax Information Here! 
+            You Can Save and Calculate Your Tax Information Here!
           </h1>
           <div className="flex space-x-6 p-6 items-center">
             <button className="bg-black text-white px-6 py-3 rounded-full shadow-md transition-all duration-300 ease-in-out">

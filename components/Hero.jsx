@@ -1,5 +1,4 @@
 "use client";
-import { Oswald } from "next/font/google";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
@@ -13,8 +12,6 @@ import {
 import { AiOutlineMenu } from "react-icons/ai";
 import { usePathname, useRouter } from "next/navigation";
 import { BsFillBellFill } from "react-icons/bs";
-
-const caveat = Oswald({ subsets: ["latin"] });
 
 export default function Hero({ landing = false }) {
   const pathname = usePathname();
@@ -49,7 +46,7 @@ export default function Hero({ landing = false }) {
         <div>
           <Link
             href={"/"}
-            className={`${caveat.className} text-white tracking-wider text-2xl font-bold`}
+            className={`text-white tracking-wider text-2xl font-bold`}
           >
             <h1>TaxWizard</h1>
           </Link>

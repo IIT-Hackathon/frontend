@@ -116,25 +116,27 @@ const page = () => {
           </div>
         ) : (
           <div className="min-w-full mt-5 overflow-x-auto flex justify-center">
-            <BarChart
-              width={window.innerWidth - window.innerWidth * 0.05}
-              height={300}
-              data={chartData}
-              margin={{
-                top: 20,
-                right: 30,
-                left: 20,
-                bottom: 5,
-              }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="income" stackId="a" fill="#8884d8" />
-              <Bar dataKey="tax" stackId="a" fill="#82ca9d" />
-            </BarChart>
+            {typeof window != "undefined" && (
+              <BarChart
+                width={window?.innerWidth - window?.innerWidth * 0.05}
+                height={300}
+                data={chartData}
+                margin={{
+                  top: 20,
+                  right: 30,
+                  left: 20,
+                  bottom: 5,
+                }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="income" stackId="a" fill="#8884d8" />
+                <Bar dataKey="tax" stackId="a" fill="#82ca9d" />
+              </BarChart>
+            )}
           </div>
         )}
         <div className="px-4 lg:px-12 mt-4 lg:mt-12">
