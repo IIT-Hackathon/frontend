@@ -143,11 +143,11 @@ export default function Home() {
         <Hero landing={true} />
       </nav>
       <section className="min-h-screen flex pt-20">
-        <div className="min-w-full p-4 text-white text-lg">
+        <div className="min-w-full p-4 text-white text-md">
           <div>
             <div className="flex items-center justify-between">
               <hr className="w-1/6 border-black" />
-              <div className="text-black text-md lg:text-2xl font-medium">
+              <div className="text-black text-sm lg:text-lg font-medium">
                 Calculate Your Tax
               </div>
               <hr className="w-1/6 lg:w-2/3 border-black" />
@@ -155,23 +155,23 @@ export default function Home() {
             <div className="bg-gray-900 rounded-lg shadow-lg p-8 m-4 lg:m-12">
               <div className="py-8 lg:py-12 text-center grid grid-cols-1 lg:grid-cols-3 gap-x-6 gap-y-6">
                 <div>
-                  <div className="text-3xl">Enter Yearly Income</div>
+                  <div className="text-xl">Enter Yearly Income</div>
                   <input
                     type="number"
                     value={income}
                     onChange={(e) => {
                       setIncome(e.target.value);
                     }}
-                    className="p-1 w-full my-4 rounded-lg text-center text-black text-3xl"
+                    className="p-1 w-full my-4 rounded-lg text-center text-black text-xl"
                     required
                   />
                 </div>
                 <div>
-                  <div className="text-3xl">Select City</div>
+                  <div className="text-xl">Select City</div>
                   <select
                     name="city"
                     id="city"
-                    className="p-1 my-4 w-full rounded-lg text-center text-black text-3xl"
+                    className="p-1 my-4 w-full rounded-lg text-center text-black text-xl"
                     onClick={(e) => setCity(e.target.value)}
                     style={{
                       background: "white",
@@ -201,11 +201,11 @@ export default function Home() {
                   </select>
                 </div>
                 <div>
-                  <div className="text-3xl">Select Year</div>
+                  <div className="text-xl">Select Year</div>
                   <select
                     name="year"
                     id="year"
-                    className="p-1 my-4 w-full rounded-lg text-center text-black text-3xl"
+                    className="p-1 my-4 w-full rounded-lg text-center text-black text-xl"
                     onClick={(e) => setYear(e.target.value)}
                     style={{
                       background: "white",
@@ -228,7 +228,7 @@ export default function Home() {
               </div>
               <div className="flex justify-center items-center">
                 {totalTax?.tax ? (
-                  <div className="text-center text-2xl lg:text-4xl">
+                  <div className="text-center text-lg lg:text-2xl">
                     Your Net Payable Tax is <br />{" "}
                     {totalTax.tax?.toLocaleString()} BDT
                   </div>
@@ -237,7 +237,7 @@ export default function Home() {
                     type="button"
                     onClick={handleCalculate}
                     disabled={calculateLoading ? true : false}
-                    className="bg-white text-black py-4 lg:py-8 px-8 lg:px-16 text-xl lg:text-3xl hover:bg-gray-100 rounded-lg"
+                    className="bg-white text-black py-4 lg:py-8 px-8 lg:px-16 text-lg lg:text-xl hover:bg-gray-100 rounded-lg"
                   >
                     {calculateLoading ? (
                       <ImSpinner5 className="text-black h-5 w-5 animate-spin" />
@@ -259,41 +259,41 @@ export default function Home() {
                 <div>
                   <div className="flex items-center justify-between">
                     <hr className="w-1/6 border-black" />
-                    <div className="text-black text-md lg:text-2xl font-medium">
+                    <div className="text-black text-sm lg:text-lg font-medium">
                       Tax Report of {currentYear}
                     </div>
                     <hr className="w-1/6 lg:w-2/3 border-black" />
                   </div>
                   <div className="grid grid-cols-1 lg:grid-cols-4 gap-x-6 gap-y-6 px-4 pt-4 lg:px-12 lg:pt-12">
                     <div className="bg-gray-900 rounded-lg shadow-lg p-8 text-center">
-                      <div className="text-xl lg:text-3xl mb-4">
+                      <div className="text-lg lg:text-xl mb-4">
                         Total Yearly Income
                       </div>
-                      <div className="text-5xl lg:text-7xl font-medium">
+                      <div className="text-3xl lg:text-5xl font-medium">
                         {currentReport.income?.toLocaleString()}
                       </div>
                     </div>
                     <div className="bg-gray-900 rounded-lg shadow-lg p-8 text-center">
-                      <div className="text-xl lg:text-3xl mb-4">
+                      <div className="text-lg lg:text-xl mb-4">
                         Taxable Amount
                       </div>
-                      <div className="text-5xl lg:text-7xl font-medium">
+                      <div className="text-3xl lg:text-5xl font-medium">
                         {currentReport.taxable_income?.toLocaleString()}
                       </div>
                     </div>
                     <div className="bg-gray-900 rounded-lg shadow-lg p-8 text-center">
-                      <div className="text-xl lg:text-3xl mb-4">
+                      <div className="text-lg lg:text-xl mb-4">
                         Net Payable Tax
                       </div>
-                      <div className="text-5xl lg:text-7xl font-medium">
+                      <div className="text-3xl lg:text-5xl font-medium">
                         {currentReport.tax?.toLocaleString()}
                       </div>
                     </div>
                     <div className="bg-gray-900 rounded-lg shadow-lg p-8 text-center">
-                      <div className="text-xl lg:text-3xl mb-4">
+                      <div className="text-lg lg:text-xl mb-4">
                         Current City
                       </div>
-                      <div className="text-5xl lg:text-7xl font-medium">
+                      <div className="text-3xl lg:text-5xl font-medium">
                         {currentReport.city?.charAt(0).toUpperCase() +
                           currentReport.city?.slice(1)}
                       </div>
@@ -302,13 +302,13 @@ export default function Home() {
                   <div className="text-black px-4 pb-4 pt-2 lg:px-12 lg:pb-12 lg:pt-4">
                     <Accordion type="single" collapsible className="w-full">
                       <AccordionItem value="item-1">
-                        <AccordionTrigger className="text-lg lg:text-2xl">
+                        <AccordionTrigger className="text-md lg:text-lg">
                           View Net Payable Tax Breakdown
                         </AccordionTrigger>
                         <AccordionContent>
                           {JSON.parse(currentReport.breakdown).map((value) => {
                             return (
-                              <div className="flex justify-between items-center text-lg lg:text-2xl px-4 lg:px-16 border-b">
+                              <div className="flex justify-between items-center text-md lg:text-lg px-4 lg:px-16 border-b">
                                 <div>{value.message}</div>
                                 <div>{value.amount + " BDT"}</div>
                               </div>
@@ -323,12 +323,12 @@ export default function Home() {
                 <div className="min-w-full">
                   <div className="flex items-center justify-between">
                     <hr className="w-1/6 border-black" />
-                    <div className="text-black text-md lg:text-2xl font-medium">
+                    <div className="text-black text-sm lg:text-lg font-medium">
                       Tax Report of {currentYear}
                     </div>
                     <hr className="w-1/3 lg:w-2/3 border-black" />
                   </div>
-                  <div className="py-8 lg:py-20 text-xl lg:text-3xl font-medium text-black text-center">
+                  <div className="py-8 lg:py-20 text-lg lg:text-xl font-medium text-black text-center">
                     No Tax Report Found for {currentYear}
                   </div>
                 </div>
@@ -338,7 +338,7 @@ export default function Home() {
           <div>
             <div className="flex items-center justify-between">
               <hr className="w-1/6 border-black" />
-              <div className="text-black text-md lg:text-2xl font-medium">
+              <div className="text-black text-sm lg:text-lg font-medium">
                 Save Reports of Past Years
               </div>
               <hr className="w-1/6 lg:w-2/3 border-black" />
@@ -346,7 +346,7 @@ export default function Home() {
             <div className="bg-gray-900 rounded-lg shadow-lg p-8 m-4 lg:m-12">
               <div className="py-8 lg:py-12 text-center grid grid-cols-1 gap-y-6">
                 <div className="lg:flex justify-between items-center">
-                  <div className="text-xl lg:text-3xl text-left lg:text-center">
+                  <div className="text-lg lg:text-xl text-left lg:text-center">
                     Enter Yearly Income
                   </div>
                   <input
@@ -355,18 +355,18 @@ export default function Home() {
                     onChange={(e) => {
                       setNewIncome(e.target.value);
                     }}
-                    className="p-1 w-full lg:w-5/6 my-4 rounded-lg text-center text-black text-3xl"
+                    className="p-1 w-full lg:w-5/6 my-4 rounded-lg text-center text-black text-xl"
                     required
                   />
                 </div>
                 <div className="lg:flex justify-between items-center">
-                  <div className="text-xl lg:text-3xl text-left lg:text-center">
+                  <div className="text-lg lg:text-xl text-left lg:text-center">
                     Select City
                   </div>
                   <select
                     name="city"
                     id="city"
-                    className="p-1 my-4 w-full lg:w-5/6 rounded-lg text-center text-black text-3xl"
+                    className="p-1 my-4 w-full lg:w-5/6 rounded-lg text-center text-black text-xl"
                     onClick={(e) => setNewCity(e.target.value)}
                     style={{
                       background: "white",
@@ -396,13 +396,13 @@ export default function Home() {
                   </select>
                 </div>
                 <div className="lg:flex justify-between items-center">
-                  <div className="text-xl lg:text-3xl text-left lg:text-center">
+                  <div className="text-lg lg:text-xl text-left lg:text-center">
                     Select Year
                   </div>
                   <select
                     name="year"
                     id="year"
-                    className="p-1 my-4 w-full lg:w-5/6 rounded-lg text-center text-black text-3xl"
+                    className="p-1 my-4 w-full lg:w-5/6 rounded-lg text-center text-black text-xl"
                     onClick={(e) => setNewYear(e.target.value)}
                     style={{
                       background: "white",
@@ -425,7 +425,7 @@ export default function Home() {
               </div>
               <div className="flex justify-center items-center">
                 {newTax?.tax ? (
-                  <div className="text-center text-2xl lg:text-4xl">
+                  <div className="text-center text-lg lg:text-2xl">
                     Saved Succesfully!
                   </div>
                 ) : (
@@ -433,7 +433,7 @@ export default function Home() {
                     type="button"
                     onClick={handleNewTax}
                     disabled={newTaxLoading ? true : false}
-                    className="bg-white text-black py-4 lg:py-8 px-8 lg:px-16 text-xl lg:text-3xl hover:bg-gray-100 rounded-lg"
+                    className="bg-white text-black py-4 lg:py-8 px-8 lg:px-16 text-lg lg:text-xl hover:bg-gray-100 rounded-lg"
                   >
                     {newTaxLoading ? (
                       <ImSpinner5 className="text-black h-5 w-5 animate-spin" />

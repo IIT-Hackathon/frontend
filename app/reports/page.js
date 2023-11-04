@@ -104,7 +104,7 @@ const page = () => {
       <section className="min-h-screen pt-20">
         <div className="flex items-center justify-between">
           <hr className="w-1/6 border-black" />
-          <div className="text-black text-md lg:text-2xl mt-5 font-medium">
+          <div className="text-black text-sm lg:text-lg mt-5 font-medium">
             Reports of Previous Years
           </div>
           <hr className="w-1/6 lg:w-2/3 border-black" />

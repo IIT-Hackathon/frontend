@@ -41,7 +41,7 @@ export default function page() {
         <div className="-mx-4 flex items-center justify-center flex-wrap">
           <div className="w-full px-4 mt-8">
             <div className="mx-auto rounded-md bg-gray-500 bg-opacity-10 py-10 px-6 dark-bg-dark sm:p-[60px]">
-              <h3 className="mb-12 text-center text-2xl font-bold text-black dark-text-white sm:text-3xl">
+              <h3 className="mb-12 text-center text-lg font-bold text-black dark-text-white sm:text-xl">
                 Welcome Back!
               </h3>
               <div className="mb-8">

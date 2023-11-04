@@ -46,7 +46,7 @@ export default function Hero({ landing = false }) {
         <div>
           <Link
             href={"/"}
-            className={`text-white tracking-wider text-2xl font-bold`}
+            className={`text-white tracking-wider text-md font-bold`}
           >
             <h1>TaxWizard</h1>
           </Link>
@@ -88,14 +88,14 @@ export default function Hero({ landing = false }) {
               <Button
                 type="button"
                 onClick={signOutHandler}
-                className="hidden lg:flex justify-center items-center rounded-md bg-white text-black text-lg hover:bg-red-800 hover:text-white transition-all duration-300"
+                className="hidden lg:flex justify-center items-center rounded-md bg-white text-black text-md hover:bg-red-800 hover:text-white transition-all duration-300"
               >
                 Logout
               </Button>
             )}
             {!signedIn ? (
               <Link href={"/login"}>
-                <Button className="rounded-md bg-white text-black text-lg hover:bg-blue-700 hover:text-white transition-all duration-300">
+                <Button className="rounded-md bg-white text-black text-md hover:bg-blue-700 hover:text-white transition-all duration-300">
                   Login
                 </Button>
               </Link>
@@ -108,7 +108,7 @@ export default function Hero({ landing = false }) {
                   <DropdownMenu>
                     <DropdownMenuTrigger className="focus:outline-none outline-none border-none">
                       <div className="flex space-x-2 focus:outline-none outline-none border-none">
-                        <AiOutlineMenu className="text-4xl text-white" />
+                        <AiOutlineMenu className="text-2xl text-white" />
                       </div>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="bg-white border-2 border-black rounded-md mt-4 mr-8 z-50">
